@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regras ACAVES</title>
+<meta name="description" content="Regras de projeto da ACAVES, sincronizadas com o Google Drive">
+<meta name="theme-color" content="#1f4e3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Regras">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icone-192.png">
+<style>
+:root {
+  --fundo: #f4f5f2; --cartao: #ffffff; --texto: #1d2320; --suave: #5d6862; --linha: #dde1dc;
+  --marca: #1f4e3d; --marca-texto: #ffffff; --destaque: #e8f0ec; --aviso: #8a5a00; --aviso-fundo: #fff4dc;
+  --erro: #a3261c; --codigo: #eef0ec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #121614; --cartao: #1b211e; --texto: #e6ebe8; --suave: #9aa7a0; --linha: #2c3531;
+    --marca: #5fb08f; --marca-texto: #0d1311; --destaque: #1f2c26; --aviso: #f0c46a; --aviso-fundo: #2d2614;
+    --erro: #ff8a7f; --codigo: #252d29;
+  }
+}
+:root[data-theme="dark"] {
+  --fundo: #121614; --cartao: #1b211e; --texto: #e6ebe8; --suave: #9aa7a0; --linha: #2c3531;
+  --marca: #5fb08f; --marca-texto: #0d1311; --destaque: #1f2c26; --aviso: #f0c46a; --aviso-fundo: #2d2614;
+  --erro: #ff8a7f; --codigo: #252d29;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--fundo); color: var(--texto);
+  font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
+header { position: sticky; top: 0; z-index: 5; background: var(--marca); color: var(--marca-texto);
+  padding: calc(env(safe-area-inset-top) + 10px) 16px 10px; display: flex; align-items: center; gap: 10px; }
+header h1 { font-size: 18px; margin: 0; flex: 1; }
+header .estado { font-size: 12px; opacity: .85; text-align: right; }
+header button { background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 8px; padding: 6px 10px; font-size: 14px; }
+main { max-width: 860px; margin: 0 auto; padding: 12px 16px calc(env(safe-area-inset-bottom) + 90px); }
+.tela { display: none; } .tela.ativa { display: block; }
+.cartao { background: var(--cartao); border: 1px solid var(--linha); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.botao { display: inline-block; background: var(--marca); color: var(--marca-texto); border: 0; border-radius: 10px;
+  padding: 12px 18px; font-size: 16px; font-weight: 600; cursor: pointer; }
+.botao.sec { background: transparent; color: var(--marca); border: 1px solid var(--marca); }
+.botao:disabled { opacity: .5; }
+.busca { width: 100%; padding: 12px 14px; font-size: 16px; border-radius: 10px; border: 1px solid var(--linha);
+  background: var(--cartao); color: var(--texto); margin-bottom: 12px; }
+details.secao { background: var(--cartao); border: 1px solid var(--linha); border-radius: 12px; margin-bottom: 8px; }
+details.secao > summary { list-style: none; padding: 14px 16px; font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+details.secao > summary::-webkit-details-marker { display: none; }
+details.secao > summary .n { margin-left: auto; font-weight: 400; font-size: 13px; color: var(--suave); white-space: nowrap; }
+details.secao[open] > summary { border-bottom: 1px solid var(--linha); }
+.corpo { padding: 4px 16px 14px; overflow-wrap: anywhere; }
+.corpo ul, .corpo ol { padding-left: 20px; margin: 6px 0; }
+.corpo li { margin: 4px 0; }
+.corpo h4 { margin: 14px 0 4px; font-size: 15px; }
+.corpo p { margin: 8px 0; }
+.corpo code { background: var(--codigo); border-radius: 4px; padding: 0 4px; font-size: 14px; }
+.corpo hr { border: 0; border-top: 1px solid var(--linha); }
+.tabela { overflow-x: auto; margin: 8px 0; }
+.corpo table { border-collapse: collapse; font-size: 14px; }
+.corpo td, .corpo th { border: 1px solid var(--linha); padding: 4px 8px; text-align: left; vertical-align: top; }
+.acoes-secao { display: flex; gap: 8px; margin-top: 10px; }
+.acoes-secao button { font-size: 14px; padding: 8px 12px; }
+.achado { padding: 10px 0; border-bottom: 1px solid var(--linha); }
+.achado small { color: var(--suave); display: block; }
+mark { background: var(--aviso-fundo); color: inherit; }
+.flutuante { position: fixed; right: 16px; bottom: calc(env(safe-area-inset-bottom) + 16px); z-index: 6;
+  border-radius: 999px; padding: 14px 20px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.faixa { background: var(--aviso-fundo); color: var(--aviso); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 14px; display: none; }
+.faixa.visivel { display: block; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 10; display: none; align-items: flex-end; justify-content: center; }
+.modal.aberto { display: flex; }
+.janela { background: var(--cartao); width: 100%; max-width: 640px; border-radius: 16px 16px 0 0;
+  padding: 18px 16px calc(env(safe-area-inset-bottom) + 18px); max-height: 92vh; overflow: auto; }
+@media (min-width: 700px) { .modal { align-items: center; } .janela { border-radius: 16px; } }
+.janela h2 { margin: 0 0 12px; font-size: 18px; }
+.janela label { display: block; font-size: 14px; color: var(--suave); margin: 10px 0 4px; }
+.janela select, .janela textarea { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px;
+  border: 1px solid var(--linha); background: var(--fundo); color: var(--texto); font-family: inherit; }
+.janela textarea { min-height: 140px; resize: vertical; }
+.janela textarea.grande { min-height: 55vh; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
+.janela .linha-botoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
+.aviso-texto { color: var(--suave); font-size: 14px; }
+#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom) + 84px);
+  background: var(--texto); color: var(--fundo); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20;
+  display: none; max-width: calc(100% - 32px); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Regras ACAVES</h1>
+  <div class="estado" id="estado"></div>
+  <button id="btAtualizar" title="Buscar a versão mais nova do Drive">Atualizar</button>
+</header>
+<main>
+  <section class="tela" id="telaEntrar">
+    <div class="cartao">
+      <p>As regras ficam num arquivo do seu Google Drive. O que você escrever aqui aparece no computador quando o Google Drive sincronizar.</p>
+      <button class="botao" id="btEntrar">Entrar com o Google</button>
+      <p class="aviso-texto" id="semConfig" style="display:none">Falta o ID do cliente do Google em <code>config.js</code> (veja o LEIA-ME). Para ver o app sem o Google, abra com <code>?demo=1</code> no fim do endereço.</p>
+    </div>
+  </section>
+
+  <section class="tela" id="telaImportar">
+    <div class="cartao">
+      <h3 style="margin-top:0">Primeira vez</h3>
+      <p>O app ainda não tem o arquivo de regras no Drive. Escolha o <b>REGRAS DE PROJETO.md</b> (no computador ele fica em SKILLS E AGENTES). O app cria a pasta <b id="nomePasta"></b> no seu Drive e guarda uma cópia lá; daí em diante, essa é a versão oficial.</p>
+      <input type="file" id="arquivoImportar" accept=".md,.txt,text/markdown,text/plain">
+    </div>
+  </section>
+
+  <section class="tela" id="telaRegras">
+    <div class="faixa" id="faixa"></div>
+    <input class="busca" id="busca" type="search" placeholder="Buscar regra (ex.: calibre, solda, oblongo)" autocomplete="off">
+    <div id="lista"></div>
+  </section>
+</main>
+
+<button class="botao flutuante" id="btNova" style="display:none">+ Nova regra</button>
+
+<div class="modal" id="modalNova">
+  <div class="janela">
+    <h2>Nova regra</h2>
+    <label for="selSecao">Assunto</label>
+    <select id="selSecao"></select>
+    <label for="txtRegra">Regra</label>
+    <textarea id="txtRegra" placeholder="Escreva a regra como você quer que ela seja seguida. Ex.: Furo de fixação de mancal sempre oblongo para regulagem da corrente."></textarea>
+    <p class="aviso-texto">Entra no fim do assunto escolhido com a data e a marca "celular". Na Caixa de entrada o Claude classifica e propaga para a skill certa.</p>
+    <div class="linha-botoes">
+      <button class="botao sec" data-fechar>Cancelar</button>
+      <button class="botao" id="btSalvarNova">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalEditar">
+  <div class="janela">
+    <h2 id="tituloEditar">Editar</h2>
+    <textarea class="grande" id="txtEditar" spellcheck="false"></textarea>
+    <p class="aviso-texto">Texto puro (Markdown). Cada regra é uma linha começando com "- ".</p>
+    <div class="linha-botoes">
+      <button class="botao sec" data-fechar>Cancelar</button>
+      <button class="botao" id="btSalvarEditar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
