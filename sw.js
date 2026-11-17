@@ -1,5 +1,5 @@
 // Guarda os arquivos do app para abrir sem internet (as regras ficam no localStorage).
-const CACHE = "acaves-v2";
+const CACHE = "acaves-v3";
 const ARQUIVOS = ["./", "index.html", "config.js", "comum.js", "pendencias.js", "regras.js", "manifest.webmanifest", "icone-192.png", "icone-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
