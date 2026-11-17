@@ -3,154 +3,275 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Regras ACAVES</title>
-<meta name="description" content="Regras de projeto da ACAVES, sincronizadas com o Google Drive">
-<meta name="theme-color" content="#1f4e3d">
+<title>ACAVES Projetos</title>
+<meta name="description" content="Pendências de projeto e regras da ACAVES, sincronizadas com o Google Drive">
+<meta name="theme-color" content="#1f5f8b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Regras">
+<meta name="apple-mobile-web-app-title" content="ACAVES">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icone-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-:root {
-  --fundo: #f4f5f2; --cartao: #ffffff; --texto: #1d2320; --suave: #5d6862; --linha: #dde1dc;
-  --marca: #1f4e3d; --marca-texto: #ffffff; --destaque: #e8f0ec; --aviso: #8a5a00; --aviso-fundo: #fff4dc;
-  --erro: #a3261c; --codigo: #eef0ec;
+:root{
+  --bg:#f3f4f2; --panel:#ffffff; --ink:#1d2326; --muted:#5f686c; --line:#d9dddb;
+  --accent:#1f5f8b; --accent-ink:#ffffff; --barra:#1f5f8b; --barra-ink:#ffffff;
+  --st-pend:#b86e00; --st-pend-bg:#fff1dc; --st-alt:#1f5f8b; --st-alt-bg:#e2eef7;
+  --st-conf:#2c7a4b; --st-conf-bg:#e1f2e7; --st-gab:#59636a; --st-gab-bg:#e8ebec;
+  --pri-alta:#c0392b; --pri-media:#d08a00; --pri-baixa:#8a959a; --danger:#b3261e;
+  --codigo:#eef0ec; --marca-fundo:#fff1dc;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --fundo: #121614; --cartao: #1b211e; --texto: #e6ebe8; --suave: #9aa7a0; --linha: #2c3531;
-    --marca: #5fb08f; --marca-texto: #0d1311; --destaque: #1f2c26; --aviso: #f0c46a; --aviso-fundo: #2d2614;
-    --erro: #ff8a7f; --codigo: #252d29;
-  }
-}
-:root[data-theme="dark"] {
-  --fundo: #121614; --cartao: #1b211e; --texto: #e6ebe8; --suave: #9aa7a0; --linha: #2c3531;
-  --marca: #5fb08f; --marca-texto: #0d1311; --destaque: #1f2c26; --aviso: #f0c46a; --aviso-fundo: #2d2614;
-  --erro: #ff8a7f; --codigo: #252d29;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--fundo); color: var(--texto);
-  font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
-header { position: sticky; top: 0; z-index: 5; background: var(--marca); color: var(--marca-texto);
-  padding: calc(env(safe-area-inset-top) + 10px) 16px 10px; display: flex; align-items: center; gap: 10px; }
-header h1 { font-size: 18px; margin: 0; flex: 1; }
-header .estado { font-size: 12px; opacity: .85; text-align: right; }
-header button { background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 8px; padding: 6px 10px; font-size: 14px; }
-main { max-width: 860px; margin: 0 auto; padding: 12px 16px calc(env(safe-area-inset-bottom) + 90px); }
-.tela { display: none; } .tela.ativa { display: block; }
-.cartao { background: var(--cartao); border: 1px solid var(--linha); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-.botao { display: inline-block; background: var(--marca); color: var(--marca-texto); border: 0; border-radius: 10px;
-  padding: 12px 18px; font-size: 16px; font-weight: 600; cursor: pointer; }
-.botao.sec { background: transparent; color: var(--marca); border: 1px solid var(--marca); }
-.botao:disabled { opacity: .5; }
-.busca { width: 100%; padding: 12px 14px; font-size: 16px; border-radius: 10px; border: 1px solid var(--linha);
-  background: var(--cartao); color: var(--texto); margin-bottom: 12px; }
-details.secao { background: var(--cartao); border: 1px solid var(--linha); border-radius: 12px; margin-bottom: 8px; }
-details.secao > summary { list-style: none; padding: 14px 16px; font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center; }
-details.secao > summary::-webkit-details-marker { display: none; }
-details.secao > summary .n { margin-left: auto; font-weight: 400; font-size: 13px; color: var(--suave); white-space: nowrap; }
-details.secao[open] > summary { border-bottom: 1px solid var(--linha); }
-.corpo { padding: 4px 16px 14px; overflow-wrap: anywhere; }
-.corpo ul, .corpo ol { padding-left: 20px; margin: 6px 0; }
-.corpo li { margin: 4px 0; }
-.corpo h4 { margin: 14px 0 4px; font-size: 15px; }
-.corpo p { margin: 8px 0; }
-.corpo code { background: var(--codigo); border-radius: 4px; padding: 0 4px; font-size: 14px; }
-.corpo hr { border: 0; border-top: 1px solid var(--linha); }
-.tabela { overflow-x: auto; margin: 8px 0; }
-.corpo table { border-collapse: collapse; font-size: 14px; }
-.corpo td, .corpo th { border: 1px solid var(--linha); padding: 4px 8px; text-align: left; vertical-align: top; }
-.acoes-secao { display: flex; gap: 8px; margin-top: 10px; }
-.acoes-secao button { font-size: 14px; padding: 8px 12px; }
-.achado { padding: 10px 0; border-bottom: 1px solid var(--linha); }
-.achado small { color: var(--suave); display: block; }
-mark { background: var(--aviso-fundo); color: inherit; }
-.flutuante { position: fixed; right: 16px; bottom: calc(env(safe-area-inset-bottom) + 16px); z-index: 6;
-  border-radius: 999px; padding: 14px 20px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
-.faixa { background: var(--aviso-fundo); color: var(--aviso); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 14px; display: none; }
-.faixa.visivel { display: block; }
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 10; display: none; align-items: flex-end; justify-content: center; }
-.modal.aberto { display: flex; }
-.janela { background: var(--cartao); width: 100%; max-width: 640px; border-radius: 16px 16px 0 0;
-  padding: 18px 16px calc(env(safe-area-inset-bottom) + 18px); max-height: 92vh; overflow: auto; }
-@media (min-width: 700px) { .modal { align-items: center; } .janela { border-radius: 16px; } }
-.janela h2 { margin: 0 0 12px; font-size: 18px; }
-.janela label { display: block; font-size: 14px; color: var(--suave); margin: 10px 0 4px; }
-.janela select, .janela textarea { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px;
-  border: 1px solid var(--linha); background: var(--fundo); color: var(--texto); font-family: inherit; }
-.janela textarea { min-height: 140px; resize: vertical; }
-.janela textarea.grande { min-height: 55vh; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
-.janela .linha-botoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
-.aviso-texto { color: var(--suave); font-size: 14px; }
-#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom) + 84px);
-  background: var(--texto); color: var(--fundo); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20;
-  display: none; max-width: calc(100% - 32px); }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15191b; --panel:#1d2326; --ink:#e7ebec; --muted:#9aa5aa; --line:#30393d;
+  --accent:#5aa6d8; --accent-ink:#0d1a22; --barra:#16303f; --barra-ink:#e7ebec;
+  --st-pend:#f0a640; --st-pend-bg:#3a2a12; --st-alt:#6db3e3; --st-alt-bg:#16303f;
+  --st-conf:#62c48a; --st-conf-bg:#173325; --st-gab:#a3adb2; --st-gab-bg:#2a3135;
+  --pri-alta:#ef6b5e; --pri-media:#f0b23e; --pri-baixa:#7d8a90; --danger:#ef6b5e;
+  --codigo:#252d29; --marca-fundo:#3a2a12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15191b; --panel:#1d2326; --ink:#e7ebec; --muted:#9aa5aa; --line:#30393d;
+  --accent:#5aa6d8; --accent-ink:#0d1a22; --barra:#16303f; --barra-ink:#e7ebec;
+  --st-pend:#f0a640; --st-pend-bg:#3a2a12; --st-alt:#6db3e3; --st-alt-bg:#16303f;
+  --st-conf:#62c48a; --st-conf-bg:#173325; --st-gab:#a3adb2; --st-gab-bg:#2a3135;
+  --pri-alta:#ef6b5e; --pri-media:#f0b23e; --pri-baixa:#7d8a90; --danger:#ef6b5e;
+  --codigo:#252d29; --marca-fundo:#3a2a12; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+/* barra do app */
+.barra{position:sticky;top:0;z-index:5;background:var(--barra);color:var(--barra-ink);padding:calc(env(safe-area-inset-top) + 8px) 16px 0}
+.barra .linha{display:flex;align-items:center;gap:10px;max-width:980px;margin:0 auto}
+.barra h1{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;flex:1;letter-spacing:.02em}
+.barra .estado{font-size:12px;opacity:.85;text-align:right}
+.barra .btn-barra{background:transparent;color:inherit;border:1px solid currentColor;border-radius:6px;padding:5px 10px;font-size:14px}
+.abas{display:flex;gap:4px;max-width:980px;margin:8px auto 0}
+.abas button{flex:1;background:transparent;color:inherit;border:0;border-bottom:3px solid transparent;padding:8px 4px 9px;font-family:var(--f-display);font-size:18px;font-weight:600;opacity:.7}
+.abas button[aria-selected="true"]{border-bottom-color:currentColor;opacity:1}
+.wrap{max-width:980px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left)) calc(env(safe-area-inset-bottom) + 90px) max(16px,env(safe-area-inset-right));display:grid;gap:16px}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:8px 14px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--danger);border-color:var(--danger);background:transparent}
+.btn:disabled{opacity:.5}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+textarea{resize:vertical;min-height:64px}
+label{display:grid;gap:4px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.cartao{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.cartao h3{margin-top:0;font-family:var(--f-display);font-size:20px}
+.msg{font-size:13px;color:var(--muted)} .msg.err{color:var(--danger)}
+.aviso-texto{color:var(--muted);font-size:14px}
+.faixa{background:var(--marca-fundo);color:var(--st-pend);border-radius:8px;padding:10px 14px;font-size:14px}
+.faixa a{color:inherit;font-weight:600}
+.flutuante{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:6;border-radius:999px;padding:14px 20px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 84px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:20;display:none;max-width:calc(100% - 32px)}
+/* pendências (mesmo visual da página antiga) */
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:10px 12px;text-align:left;display:grid;gap:2px;color:var(--ink)}
+.chip b{font-family:var(--f-display);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+.chip span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.chip b{font-size:22px}}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools select,.tools input{flex:1 1 180px;min-width:0}
+form.add{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+form.add .full{grid-column:1/-1}
+form.add .row-end{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
+@media (max-width:640px){form.add{grid-template-columns:1fr}}
+.group{display:grid;gap:8px}
+.group h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:6px 0 0;display:flex;gap:8px;align-items:baseline}
+.group h2 small{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:500}
+.card{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--pri-baixa);border-radius:8px;padding:12px 14px;display:grid;gap:8px;min-width:0}
+.card.p-alta{border-left-color:var(--pri-alta)} .card.p-media{border-left-color:var(--pri-media)}
+.card.done{opacity:.72}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.code{font-family:var(--f-mono);font-size:13px;font-weight:500;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 6px;overflow-wrap:anywhere}
+.what{font-size:16px;font-weight:500;overflow-wrap:anywhere;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.s-pendente{color:var(--st-pend);background:var(--st-pend-bg)} .s-alterado{color:var(--st-alt);background:var(--st-alt-bg)}
+.s-conferido{color:var(--st-conf);background:var(--st-conf-bg)} .s-gabaritado{color:var(--st-gab);background:var(--st-gab-bg)}
+.note{font-size:13.5px;background:var(--bg);border-radius:6px;padding:8px 10px;overflow-wrap:anywhere;white-space:pre-wrap;margin:0}
+.note b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.actions select{width:auto;flex:0 1 auto;padding:6px 8px;font-size:14px}
+.actions .btn{padding:6px 10px;font-size:14px}
+.photo img,.photo video{max-width:100%;max-height:300px;border-radius:6px;border:1px solid var(--line);display:block}
+.photo img:not([src]){width:120px;height:90px;background:var(--bg)}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:28px 18px;text-align:center;color:var(--muted);display:grid;gap:6px}
+.empty strong{color:var(--ink);font-family:var(--f-display);font-size:20px;font-weight:600}
+.editbox{display:grid;gap:8px}
+/* regras */
+details.secao{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+details.secao>summary{list-style:none;padding:14px 16px;font-weight:600;cursor:pointer;display:flex;gap:8px;align-items:center}
+details.secao>summary::-webkit-details-marker{display:none}
+details.secao>summary .n{margin-left:auto;font-weight:400;font-size:13px;color:var(--muted);white-space:nowrap}
+details.secao[open]>summary{border-bottom:1px solid var(--line)}
+.corpo{padding:4px 16px 14px;overflow-wrap:anywhere}
+.corpo ul,.corpo ol{padding-left:20px;margin:6px 0} .corpo li{margin:4px 0}
+.corpo h4{margin:14px 0 4px;font-size:15px} .corpo p{margin:8px 0}
+.corpo code{background:var(--codigo);border-radius:4px;padding:0 4px;font-size:14px}
+.tabela{overflow-x:auto;margin:8px 0}
+.corpo table{border-collapse:collapse;font-size:14px}
+.corpo td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+.acoes-secao{display:flex;gap:8px;margin-top:10px}
+.achado{padding:10px 0;border-bottom:1px solid var(--line)}
+.achado small{color:var(--muted);display:block}
+mark{background:var(--marca-fundo);color:inherit}
+/* janelas */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10;display:none;align-items:flex-end;justify-content:center}
+.modal.aberto{display:flex}
+.janela{background:var(--panel);width:100%;max-width:640px;border-radius:14px 14px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:92vh;overflow:auto;display:grid;gap:10px}
+@media (min-width:700px){.modal{align-items:center}.janela{border-radius:14px}}
+.janela h2{margin:0;font-family:var(--f-display);font-size:22px}
+.janela textarea{min-height:140px}
+.janela textarea.grande{min-height:55vh;font-family:var(--f-mono);font-size:14px}
+.janela .linha-botoes{display:flex;gap:10px;justify-content:flex-end}
 </style>
 </head>
 <body>
-<header>
-  <h1>Regras ACAVES</h1>
-  <div class="estado" id="estado"></div>
-  <button id="btAtualizar" title="Buscar a versão mais nova do Drive">Atualizar</button>
-</header>
-<main>
-  <section class="tela" id="telaEntrar">
-    <div class="cartao">
-      <p>As regras ficam num arquivo do seu Google Drive. O que você escrever aqui aparece no computador quando o Google Drive sincronizar.</p>
-      <button class="botao" id="btEntrar">Entrar com o Google</button>
-      <p class="aviso-texto" id="semConfig" style="display:none">Falta o ID do cliente do Google em <code>config.js</code> (veja o LEIA-ME). Para ver o app sem o Google, abra com <code>?demo=1</code> no fim do endereço.</p>
+<div class="barra">
+  <div class="linha">
+    <h1>ACAVES</h1>
+    <div class="estado" id="estado"></div>
+    <button class="btn-barra" id="btAtualizar" title="Buscar a versão mais nova do Drive">Atualizar</button>
+  </div>
+  <div class="abas" role="tablist">
+    <button role="tab" id="abaPend" aria-selected="true">Pendências</button>
+    <button role="tab" id="abaReg" aria-selected="false">Regras</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="faixa" id="faixaLogin" hidden>Login do Google vencido. <a href="#" id="lkEntrar">Entrar de novo</a> para enviar e receber alterações.</div>
+
+  <section id="telaEntrar" class="cartao" hidden>
+    <h3>Entrar</h3>
+    <p>As pendências e as regras ficam no seu Google Drive. O que você lançar aqui aparece no computador quando o Google Drive sincronizar.</p>
+    <button class="btn primary" id="btEntrar">Entrar com o Google</button>
+  </section>
+
+  <!-- ===== PENDÊNCIAS ===== -->
+  <section id="painelPend">
+    <div id="pendImportar" class="cartao" hidden>
+      <h3>Primeira vez: pendências</h3>
+      <p>O app ainda não tem a lista de pendências no Drive. Escolha o <b>pacote de migração</b> (PENDENCIAS - PACOTE DE MIGRACAO.json, preparado pelo Claude com os itens e as fotos da página antiga). O app cria no seu Drive a pasta <b>ACAVES - PENDENCIAS</b> com a lista e a subpasta FOTOS.</p>
+      <p><input type="file" id="pendPacote" accept=".json,application/json"></p>
+      <p class="msg" id="pendImpMsg"></p>
+      <p><button class="btn" id="pendVazia" type="button">Começar com a lista vazia</button></p>
+    </div>
+    <div id="pendConteudo" style="display:grid;gap:16px">
+      <div>
+        <h2 style="font-family:var(--f-display);font-size:28px;margin:0">Pendências de Projeto</h2>
+        <p class="msg" style="margin:2px 0 0">Alterações para fazer antes de gabaritar · protótipo → SolidWorks → conferência → gabarito</p>
+      </div>
+      <div class="stats" id="pendStats" role="group" aria-label="Filtrar por status"></div>
+      <form class="add" id="pendFormNova" hidden></form>
+      <div class="tools">
+        <select id="pendFiltroProj" aria-label="Filtrar por projeto"><option value="">Todos os projetos</option></select>
+        <input id="pendBusca" type="search" placeholder="Buscar peça ou alteração" aria-label="Buscar">
+      </div>
+      <div id="pendLista" style="display:grid;gap:18px"></div>
+      <datalist id="listaProjetos"></datalist>
     </div>
   </section>
 
-  <section class="tela" id="telaImportar">
-    <div class="cartao">
-      <h3 style="margin-top:0">Primeira vez</h3>
-      <p>O app ainda não tem o arquivo de regras no Drive. Escolha o <b>REGRAS DE PROJETO.md</b> (no computador ele fica em SKILLS E AGENTES). O app cria a pasta <b id="nomePasta"></b> no seu Drive e guarda uma cópia lá; daí em diante, essa é a versão oficial.</p>
-      <input type="file" id="arquivoImportar" accept=".md,.txt,text/markdown,text/plain">
+  <!-- ===== REGRAS ===== -->
+  <section id="painelReg" hidden>
+    <div id="regImportar" class="cartao" hidden>
+      <h3>Primeira vez: regras</h3>
+      <p>Escolha o <b>REGRAS DE PROJETO.md</b>. O app cria a pasta <b>ACAVES - REGRAS</b> no seu Drive com uma cópia; daí em diante, essa é a versão oficial.</p>
+      <input type="file" id="regArquivo" accept=".md,.txt,text/markdown,text/plain">
+    </div>
+    <div id="regConteudo">
+      <input id="regBusca" type="search" placeholder="Buscar regra (ex.: calibre, solda, oblongo)" autocomplete="off" style="margin-bottom:12px">
+      <div id="regLista"></div>
     </div>
   </section>
+</div>
 
-  <section class="tela" id="telaRegras">
-    <div class="faixa" id="faixa"></div>
-    <input class="busca" id="busca" type="search" placeholder="Buscar regra (ex.: calibre, solda, oblongo)" autocomplete="off">
-    <div id="lista"></div>
-  </section>
-</main>
-
-<button class="botao flutuante" id="btNova" style="display:none">+ Nova regra</button>
+<button class="btn primary flutuante" id="btNovo">+ Nova pendência</button>
 
 <div class="modal" id="modalNova">
   <div class="janela">
     <h2>Nova regra</h2>
-    <label for="selSecao">Assunto</label>
-    <select id="selSecao"></select>
-    <label for="txtRegra">Regra</label>
-    <textarea id="txtRegra" placeholder="Escreva a regra como você quer que ela seja seguida. Ex.: Furo de fixação de mancal sempre oblongo para regulagem da corrente."></textarea>
-    <p class="aviso-texto">Entra no fim do assunto escolhido com a data e a marca "celular". Na Caixa de entrada o Claude classifica e propaga para a skill certa.</p>
-    <div class="linha-botoes">
-      <button class="botao sec" data-fechar>Cancelar</button>
-      <button class="botao" id="btSalvarNova">Salvar</button>
-    </div>
+    <label>Assunto<select id="selSecao"></select></label>
+    <label>Regra<textarea id="txtRegra" placeholder="Escreva a regra como você quer que ela seja seguida."></textarea></label>
+    <p class="aviso-texto" style="margin:0">Entra no fim do assunto com a data e a marca "celular". Na Caixa de entrada o Claude classifica e propaga para a skill certa.</p>
+    <div class="linha-botoes"><button class="btn" data-fechar>Cancelar</button><button class="btn primary" id="btSalvarNova">Salvar</button></div>
   </div>
 </div>
-
 <div class="modal" id="modalEditar">
   <div class="janela">
     <h2 id="tituloEditar">Editar</h2>
     <textarea class="grande" id="txtEditar" spellcheck="false"></textarea>
-    <p class="aviso-texto">Texto puro (Markdown). Cada regra é uma linha começando com "- ".</p>
-    <div class="linha-botoes">
-      <button class="botao sec" data-fechar>Cancelar</button>
-      <button class="botao" id="btSalvarEditar">Salvar</button>
-    </div>
+    <p class="aviso-texto" style="margin:0">Texto puro (Markdown). Cada regra é uma linha começando com "- " ou "1. ".</p>
+    <div class="linha-botoes"><button class="btn" data-fechar>Cancelar</button><button class="btn primary" id="btSalvarEditar">Salvar</button></div>
   </div>
 </div>
-
 <div id="toast"></div>
+
 <script src="config.js"></script>
-<script src="app.js"></script>
+<script src="comum.js"></script>
+<script>
+// casca do app: abas, login, estado e sincronização das duas partes
+(() => {
+  const { $, loc } = ACV;
+  let aba = loc.ler("aba", "pend");
+  ACV.abrirModal = id => $(id).classList.add("aberto");
+  ACV.fecharModais = () => document.querySelectorAll(".modal").forEach(m => m.classList.remove("aberto"));
+  document.querySelectorAll("[data-fechar]").forEach(b => b.onclick = ACV.fecharModais);
+  document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) ACV.fecharModais(); }));
+  ACV.pedirLogin = () => {
+    const temDados = window.Pendencias && (Pendencias.temDados() || Regras.temDados());
+    $("faixaLogin").hidden = !temDados; $("telaEntrar").hidden = !!temDados;
+    if (!temDados) { $("painelPend").hidden = true; $("painelReg").hidden = true; $("btNovo").hidden = true; }
+  };
+  ACV.atualizarEstado = () => {
+    const m = aba === "pend" ? window.Pendencias : window.Regras;
+    let s = ACV.DEMO ? "demonstração" : (navigator.onLine ? "" : "sem internet");
+    const e = m ? m.estado() : "";
+    $("estado").textContent = [s, e].filter(Boolean).join(" · ");
+  };
+  ACV.mostrarAba = nova => {
+    aba = nova; loc.gravar("aba", aba);
+    $("abaPend").setAttribute("aria-selected", aba === "pend"); $("abaReg").setAttribute("aria-selected", aba === "reg");
+    if (ACV.token()) { $("telaEntrar").hidden = true; $("faixaLogin").hidden = true; }
+    const semLogin = !$("telaEntrar").hidden;
+    $("painelPend").hidden = semLogin || aba !== "pend"; $("painelReg").hidden = semLogin || aba !== "reg";
+    $("btNovo").hidden = semLogin; $("btNovo").textContent = aba === "pend" ? "+ Nova pendência" : "+ Nova regra";
+    ACV.atualizarEstado();
+  };
+  ACV.sincronizarTudo = s => { if (!ACV.token()) { ACV.pedirLogin(); return; } Pendencias.sincronizar(s); Regras.sincronizar(s); };
+  $("abaPend").onclick = () => ACV.mostrarAba("pend");
+  $("abaReg").onclick = () => ACV.mostrarAba("reg");
+  $("btEntrar").onclick = ACV.entrar;
+  $("lkEntrar").onclick = e => { e.preventDefault(); ACV.entrar(); };
+  $("btAtualizar").onclick = () => ACV.sincronizarTudo(false);
+  $("btNovo").onclick = () => (aba === "pend" ? Pendencias.novo() : Regras.novo());
+  window.addEventListener("online", () => ACV.sincronizarTudo(true));
+  window.addEventListener("offline", ACV.atualizarEstado);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) ACV.sincronizarTudo(true); });
+  ACV.iniciar = () => {
+    ACV.lerRetornoLogin();
+    Pendencias.desenhar(); Regras.desenhar();
+    if (!ACV.token()) ACV.pedirLogin();
+    ACV.mostrarAba(aba);
+    ACV.sincronizarTudo(true);
+    if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+  };
+})();
+</script>
+<script src="pendencias.js"></script>
+<script src="regras.js"></script>
+<script>ACV.iniciar();</script>
 </body>
 </html>
